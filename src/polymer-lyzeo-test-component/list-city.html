@@ -1,0 +1,48 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="https://polygit.org/components/polymer/lib/elements/dom-repeat.html">
+
+<dom-module id="list-city">
+    <template>
+        <ul>
+            <template id="cityList" is="dom-repeat" items="{{cities}}">
+                <li>{{item}}<button type="button" on-click="deleteCity">x</button></li>
+            </template>
+        </ul>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class ListCityComponent extends Polymer.Element {
+            static get is() {
+                return 'list-city';
+            }
+
+            constructor() {
+                super();
+                this.cities = [];
+            }
+
+            static get properties() {
+                return {
+                    cities: {
+                        type: Array
+                    }
+                };
+            }
+
+            deleteCity(e) {
+                let item = this.$.cityList.itemForElement(e.target);
+                this.dispatchEvent(new CustomEvent('deleteCity', {detail: {value: item}}));
+            }
+
+            handleClick(e) {
+                this.dispatchEvent(new CustomEvent('searchUpdated', {detail: {value: this.data}}));
+            }
+        }
+
+        window.customElements.define(ListCityComponent.is, ListCityComponent);
+    </script>
+</dom-module>

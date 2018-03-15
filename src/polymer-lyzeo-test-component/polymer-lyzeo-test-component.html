@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="/src/polymer-lyzeo-test-component/search-city.html">
+<link rel="import" href="/src/polymer-lyzeo-test-component/list-city.html">
+
+<dom-module id="polymer-lyzeo-test-component">
+    <template>
+        <search-city id="searchCity" search-cities="{{searchCities}}"></search-city>
+        <list-city id="listCity" cities="{{cities}}"></list-city>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class PolymerLyzeoTestComponent extends Polymer.Element {
+            static get is() {
+                return 'polymer-lyzeo-test-component';
+            }
+
+            constructor() {
+                super();
+                this.cities = [];
+                this.validCities = ['lyon', 'paris', 'marseille', 'toulouse', 'lille']
+            }
+
+            ready() {
+                let that = this;
+                super.ready();
+                this.$.searchCity
+                    .addEventListener('searchUpdated', function (e) {
+                        let values = e.detail.value.split(' ');
+                        that.cities = that.validCities.filter((validCity) => {
+                            return values.includes(validCity)
+                        });
+                        that.searchCities = '';
+                        that.cities.forEach((city) => {
+                            that.searchCities += city + ' ';
+                        })
+                    });
+
+                this.$.listCity.addEventListener('deleteCity', function (e) {
+                    let city = e.detail.value;
+                    that.cities = that.cities.filter((validCity) => {
+                        return validCity !== city;
+                    });
+                    that.searchCities = '';
+                    that.cities.forEach((city) => {
+                        that.searchCities += city + ' ';
+                    })
+                })
+            }
+        }
+
+        window.customElements.define(PolymerLyzeoTestComponent.is, PolymerLyzeoTestComponent);
+    </script>
+</dom-module>
